@@ -5858,5 +5858,39 @@
       "received": 316.5,
       "dispatch": 316
     }
+  ],
+  "marvel_sizes": [
+    {
+      "product": "Washed Cotton 3Q Essential Sleeve Top",
+      "XS_rev": 0,
+      "S_rev": 110,
+      "M_rev": 110,
+      "L_rev": 110,
+      "XL_rev": 56
+    },
+    {
+      "product": "Washed Cotton 3Q Sleeve Top",
+      "XS_rev": 0,
+      "S_rev": 81,
+      "M_rev": 80,
+      "L_rev": 81,
+      "XL_rev": 42
+    },
+    {
+      "product": "Washed Cotton Tunic with Pin Tucks",
+      "XS_rev": 0,
+      "S_rev": 111,
+      "M_rev": 111,
+      "L_rev": 111,
+      "XL_rev": 55
+    },
+    {
+      "product": "Washed Cotton 'V' Neck Essential Top",
+      "XS_rev": 0,
+      "S_rev": 112,
+      "M_rev": 112,
+      "L_rev": 112,
+      "XL_rev": 56
+    }
   ]
 }

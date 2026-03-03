@@ -94,6 +94,15 @@ export default function Dashboard() {
     dispatch: Number(d.dispatch) || 0
   })), []);
 
+  const marvelSizesChartData = useMemo(() => (data as any).marvel_sizes.map((d: any) => ({
+    name: String(d.product),
+    XS: Number(d.XS_rev) || 0,
+    S: Number(d.S_rev) || 0,
+    M: Number(d.M_rev) || 0,
+    L: Number(d.L_rev) || 0,
+    XL: Number(d.XL_rev) || 0,
+  })), []);
+
   // Filter States
   const [outstandingFilter, setOutstandingFilter] = useState("All");
   const [poFilter, setPoFilter] = useState("All");
@@ -381,6 +390,24 @@ export default function Dashboard() {
                     <Bar dataKey="revisedQty" name="Revised Qty" fill="#10b981" radius={[4, 4, 0, 0]}>
                       <LabelList dataKey="revisedQty" position="top" fill="#fff" fontSize={10} />
                     </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+                <h3 className="text-xl font-bold text-white mb-6">Revised Quantity Size Breakdown</h3>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={marvelSizesChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
+                    <YAxis stroke="#888" tick={{ fill: '#888' }} />
+                    <Tooltip cursor={{ fill: '#333', opacity: 0.4 }} contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }} />
+                    <Legend wrapperStyle={{ paddingTop: '30px' }} />
+                    <Bar dataKey="XS" stackId="a" name="Size XS" fill="#a855f7" />
+                    <Bar dataKey="S" stackId="a" name="Size S" fill="#f59e0b" />
+                    <Bar dataKey="M" stackId="a" name="Size M" fill="#3b82f6" />
+                    <Bar dataKey="L" stackId="a" name="Size L" fill="#10b981" />
+                    <Bar dataKey="XL" stackId="a" name="Size XL" fill="#ef4444" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
