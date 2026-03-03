@@ -5,7 +5,7 @@ import data from '@/data/dashboard_data.json';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LabelList
@@ -28,7 +28,7 @@ const COLORS = [
 const aggregateBy = (arr: any[], keyField: string, valField: string, limit = 15) => {
   const map: any = {};
   arr.forEach(item => {
-    let k = String(item[keyField] || "Unknown").split(',')[0].substring(0, 25);
+    let k = String(item[keyField] || "Unknown").split(',')[0];
     let v = Number(item[valField]) || 0;
     map[k] = (map[k] || 0) + v;
   });
@@ -41,7 +41,7 @@ const aggregateBy = (arr: any[], keyField: string, valField: string, limit = 15)
 const countBy = (arr: any[], keyField: string, limit = 15) => {
   const map: any = {};
   arr.forEach(item => {
-    let k = String(item[keyField] || "Unknown").split(',')[0].substring(0, 25);
+    let k = String(item[keyField] || "Unknown").split(',')[0];
     map[k] = (map[k] || 0) + 1;
   });
   return Object.entries(map)
@@ -57,21 +57,41 @@ const formatValue = (value: any) => {
 
 export default function Dashboard() {
   const outstandingData = useMemo(() => aggregateBy(data.outstanding, 'vendor', 'pending_qty'), []);
-  const advData = useMemo(() => aggregateBy(data.adv, 'vendor', 'po_value'), []);
+  const advData = useMemo(() => aggregateBy(data.adv, 'vendor', 'adv_value'), []);
   const poData = useMemo(() => countBy(data.po, 'vendor'), []);
   const prData = useMemo(() => aggregateBy(data.pr, 'requested_by', 'qty'), []);
   const rfqData = useMemo(() => countBy(data.rfq, 'vendor'), []);
 
   const desiChartData = useMemo(() => data.desi.filter((d: any) => d.product).map((d: any) => ({
-    name: String(d.product).substring(0, 25),
+    name: String(d.product),
     poQty: Number(d.po_qty) || 0,
     revisedQty: Number(d.revised_qty) || 0
   })), []);
 
   const marvelChartData = useMemo(() => data.marvel.filter((d: any) => d.product).map((d: any) => ({
-    name: String(d.product).substring(0, 25),
+    name: String(d.product),
     poQty: Number(d.po_qty) || 0,
     revisedQty: Number(d.revised_qty) || 0
+  })), []);
+
+  const marvelSbChartData = useMemo(() => (data as any).marvel_sb.map((d: any) => ({
+    name: String(d.fabric),
+    received: Number(d.received) || 0,
+    dispatch: Number(d.dispatch) || 0
+  })), []);
+
+  const desiSizesChartData = useMemo(() => (data as any).desi_sizes.map((d: any) => ({
+    name: String(d.product),
+    S: Number(d.S_rev) || 0,
+    M: Number(d.M_rev) || 0,
+    L: Number(d.L_rev) || 0,
+    XL: Number(d.XL_rev) || 0,
+  })), []);
+
+  const desiSbChartData = useMemo(() => (data as any).desi_sb.map((d: any) => ({
+    name: String(d.fabric),
+    received: Number(d.received) || 0,
+    dispatch: Number(d.dispatch) || 0
   })), []);
 
   // Filter States
@@ -128,9 +148,9 @@ export default function Dashboard() {
               <CardDescription>Top vendors by total pending item quantity</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] w-full mb-8">
+              <div className="h-[550px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={outstandingData} margin={{ top: 30, right: 30, left: 20, bottom: 65 }}>
+                  <BarChart data={outstandingData} margin={{ top: 30, right: 30, left: 20, bottom: 200 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 12 }} />
                     <YAxis stroke="#888" tick={{ fill: '#888' }} />
@@ -177,7 +197,7 @@ export default function Dashboard() {
                       <TableRow key={i} className="hover:bg-secondary/40">
                         <TableCell className="font-medium text-white">{row.vendor}</TableCell>
                         <TableCell className="text-muted-foreground">{row.status}</TableCell>
-                        <TableCell className="max-w-[300px] truncate" title={row.product}>{row.product}</TableCell>
+                        <TableCell>{row.product}</TableCell>
                         <TableCell className="text-right font-bold text-sky-400">{row.pending_qty}</TableCell>
                       </TableRow>
                     ))}
@@ -188,6 +208,7 @@ export default function Dashboard() {
                     )}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
@@ -198,17 +219,17 @@ export default function Dashboard() {
           <Card className="border-border bg-card/40 backdrop-blur">
             <CardHeader>
               <CardTitle className="text-2xl text-white">Advance Vendor Distribution</CardTitle>
-              <CardDescription>Vendors analyzed by gross PO Value</CardDescription>
+              <CardDescription>Vendors analyzed by Advance Value</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] w-full mb-8">
+              <div className="h-[600px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={advData} margin={{ top: 20, right: 80, left: 20, bottom: 20 }} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={true} vertical={false} />
                     <XAxis type="number" stroke="#888" tick={{ fill: '#888', fontSize: 12 }} />
-                    <YAxis dataKey="name" type="category" stroke="#888" tick={{ fill: '#888' }} width={150} />
+                    <YAxis dataKey="name" type="category" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} width={300} />
                     <Tooltip cursor={{ fill: '#333', opacity: 0.4 }} contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }} />
-                    <Bar dataKey="value" name="PO Value" radius={[0, 4, 4, 0]}>
+                    <Bar dataKey="value" name="Advance Value" radius={[0, 4, 4, 0]}>
                       {advData.map((entry, index) => (
                         <Cell key={`cell-adv-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
                       ))}
@@ -238,11 +259,12 @@ export default function Dashboard() {
                         <TableCell className="text-right font-medium text-emerald-400">{formatValue(row.po_value)}</TableCell>
                         <TableCell className="text-right text-amber-400">{formatValue(row.adv_value)}</TableCell>
                         <TableCell>{formatValue(row.arrival)}</TableCell>
-                        <TableCell className="max-w-[200px] truncate" title={row.remarks}>{formatValue(row.remarks)}</TableCell>
+                        <TableCell>{formatValue(row.remarks)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
@@ -256,9 +278,9 @@ export default function Dashboard() {
               <CardDescription>Comparison: Cutting Qty As Per PO vs Revised Qty</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] w-full mb-8">
+              <div className="h-[600px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={desiChartData} margin={{ top: 30, right: 30, left: 20, bottom: 65 }}>
+                  <BarChart data={desiChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
                     <YAxis stroke="#888" tick={{ fill: '#888' }} />
@@ -274,27 +296,64 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
+              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+                <h3 className="text-xl font-bold text-white mb-6">Revised Quantity Size Breakdown</h3>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={desiSizesChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
+                    <YAxis stroke="#888" tick={{ fill: '#888' }} />
+                    <Tooltip cursor={{ fill: '#333', opacity: 0.4 }} contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }} />
+                    <Legend wrapperStyle={{ paddingTop: '30px' }} />
+                    <Bar dataKey="S" stackId="a" name="Size S" fill="#f59e0b" />
+                    <Bar dataKey="M" stackId="a" name="Size M" fill="#3b82f6" />
+                    <Bar dataKey="L" stackId="a" name="Size L" fill="#10b981" />
+                    <Bar dataKey="XL" stackId="a" name="Size XL" fill="#ef4444" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+                <h3 className="text-xl font-bold text-white mb-6">Fabric Received vs Dispatch</h3>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={desiSbChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
+                    <YAxis stroke="#888" tick={{ fill: '#888' }} />
+                    <Tooltip cursor={{ fill: '#333', opacity: 0.4 }} contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }} />
+                    <Legend wrapperStyle={{ paddingTop: '30px' }} />
+                    <Bar dataKey="received" name="Received Qty" fill="#0ea5e9" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="received" position="top" fill="#fff" fontSize={10} />
+                    </Bar>
+                    <Bar dataKey="dispatch" name="Dispatch Qty" fill="#f97316" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="dispatch" position="top" fill="#fff" fontSize={10} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
               <ScrollArea className="h-[400px] rounded-md border border-border">
                 <Table>
                   <TableHeader className="bg-secondary/50 sticky top-0 z-10 backdrop-blur-md">
                     <TableRow>
-                      <TableHead>Fabric</TableHead>
-                      <TableHead>Product Name</TableHead>
-                      <TableHead className="text-right">PO Qty</TableHead>
-                      <TableHead className="text-right">Revised Qty</TableHead>
+                      <TableHead className="min-w-[250px]">Fabric</TableHead>
+                      <TableHead className="min-w-[300px]">Product Name</TableHead>
+                      <TableHead className="text-right min-w-[100px]">PO Qty</TableHead>
+                      <TableHead className="text-right min-w-[120px]">Revised Qty</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {data.desi.filter((r: any) => r.product).map((row: any, i: number) => (
                       <TableRow key={i} className="hover:bg-secondary/40">
-                        <TableCell className="max-w-[250px] truncate text-muted-foreground" title={row.fabric}>{row.fabric}</TableCell>
-                        <TableCell className="font-medium text-white max-w-[250px] truncate" title={row.product}>{row.product}</TableCell>
+                        <TableCell className="text-muted-foreground">{row.fabric}</TableCell>
+                        <TableCell className="font-medium text-white">{row.product}</TableCell>
                         <TableCell className="text-right">{row.po_qty}</TableCell>
                         <TableCell className="text-right font-bold text-pink-400">{row.revised_qty}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
@@ -308,9 +367,9 @@ export default function Dashboard() {
               <CardDescription>Production and revision status</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] w-full mb-8">
+              <div className="h-[600px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={marvelChartData} margin={{ top: 30, right: 30, left: 20, bottom: 65 }}>
+                  <BarChart data={marvelChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
                     <YAxis stroke="#888" tick={{ fill: '#888' }} />
@@ -326,27 +385,47 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
+              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+                <h3 className="text-xl font-bold text-white mb-6">Fabric Received vs Dispatch</h3>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={marvelSbChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
+                    <YAxis stroke="#888" tick={{ fill: '#888' }} />
+                    <Tooltip cursor={{ fill: '#333', opacity: 0.4 }} contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }} />
+                    <Legend wrapperStyle={{ paddingTop: '30px' }} />
+                    <Bar dataKey="received" name="Received Qty" fill="#0ea5e9" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="received" position="top" fill="#fff" fontSize={10} />
+                    </Bar>
+                    <Bar dataKey="dispatch" name="Dispatch Qty" fill="#f97316" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="dispatch" position="top" fill="#fff" fontSize={10} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
               <ScrollArea className="h-[400px] rounded-md border border-border">
                 <Table>
                   <TableHeader className="bg-secondary/50 sticky top-0 z-10 backdrop-blur-md">
                     <TableRow>
-                      <TableHead>Fabric Name</TableHead>
-                      <TableHead>Product</TableHead>
-                      <TableHead className="text-right">PO Qty</TableHead>
-                      <TableHead className="text-right">Revised Qty</TableHead>
+                      <TableHead className="min-w-[250px]">Fabric Name</TableHead>
+                      <TableHead className="min-w-[300px]">Product</TableHead>
+                      <TableHead className="text-right min-w-[100px]">PO Qty</TableHead>
+                      <TableHead className="text-right min-w-[120px]">Revised Qty</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {data.marvel.filter((r: any) => r.product).map((row: any, i: number) => (
                       <TableRow key={i} className="hover:bg-secondary/40">
-                        <TableCell className="max-w-[250px] truncate text-muted-foreground" title={row.fabric}>{row.fabric}</TableCell>
-                        <TableCell className="font-medium text-white max-w-[250px] truncate">{row.product}</TableCell>
+                        <TableCell className="text-muted-foreground">{row.fabric}</TableCell>
+                        <TableCell className="font-medium text-white">{row.product}</TableCell>
                         <TableCell className="text-right">{row.po_qty}</TableCell>
                         <TableCell className="text-right font-bold text-emerald-400">{row.revised_qty}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
@@ -360,9 +439,9 @@ export default function Dashboard() {
               <CardDescription>Volume of Source Documents processed per Vendor</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] flex justify-center items-center w-full mb-8">
+              <div className="h-[500px] flex justify-center items-center w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={poData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }} layout="horizontal">
+                  <BarChart data={poData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
                     <YAxis stroke="#888" tick={{ fill: '#888' }} />
@@ -398,24 +477,25 @@ export default function Dashboard() {
                 <Table>
                   <TableHeader className="bg-secondary/50 sticky top-0 z-10 backdrop-blur-md">
                     <TableRow>
-                      <TableHead>Source Document</TableHead>
-                      <TableHead>Vendor</TableHead>
+                      <TableHead>Vendor Name</TableHead>
+                      <TableHead className="text-right">Documents Processed (Quantity)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredPO.map((row: any, i: number) => (
+                    {(poFilter === "All" ? poData : poData.filter(r => r.name === poFilter)).map((row: any, i: number) => (
                       <TableRow key={i} className="hover:bg-secondary/40">
-                        <TableCell className="font-medium text-amber-400">{row.source}</TableCell>
-                        <TableCell className="text-white">{row.vendor}</TableCell>
+                        <TableCell className="font-medium text-white">{row.name}</TableCell>
+                        <TableCell className="text-right text-amber-400 font-bold">{row.value}</TableCell>
                       </TableRow>
                     ))}
-                    {filteredPO.length === 0 && (
+                    {poData.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={2} className="text-center py-6 text-muted-foreground">No records found.</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
@@ -429,11 +509,11 @@ export default function Dashboard() {
               <CardDescription>Total request quantity grouped by personnel</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[350px] w-full mb-8">
+              <div className="h-[550px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={prData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
+                  <BarChart data={prData} margin={{ top: 30, right: 30, left: 20, bottom: 200 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-                    <XAxis dataKey="name" stroke="#888" tick={{ fill: '#888', fontSize: 13 }} />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 13 }} />
                     <YAxis stroke="#888" tick={{ fill: '#888' }} />
                     <Tooltip cursor={{ fill: '#333', opacity: 0.4 }} contentStyle={{ backgroundColor: '#000', borderColor: '#333', color: '#fff' }} />
                     <Bar dataKey="value" name="Requested Qty" radius={[4, 4, 0, 0]}>
@@ -478,7 +558,7 @@ export default function Dashboard() {
                       <TableRow key={i} className="hover:bg-secondary/40">
                         <TableCell className="font-medium text-white whitespace-nowrap">{row.requested_by}</TableCell>
                         <TableCell className="text-muted-foreground whitespace-nowrap">{row.pr}</TableCell>
-                        <TableCell className="max-w-[300px] truncate" title={row.desc}>{row.desc}</TableCell>
+                        <TableCell>{row.desc}</TableCell>
                         <TableCell className="text-right font-bold text-violet-400">{row.qty}</TableCell>
                       </TableRow>
                     ))}
@@ -489,6 +569,7 @@ export default function Dashboard() {
                     )}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
@@ -502,9 +583,9 @@ export default function Dashboard() {
               <CardDescription>Open quote volumes currently engaged per vendor mapping</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] flex justify-center items-center w-full mb-8">
+              <div className="h-[500px] flex justify-center items-center w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={rfqData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }} layout="horizontal">
+                  <BarChart data={rfqData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" stroke="#888" tick={{ fill: '#888', fontSize: 11 }} />
                     <YAxis stroke="#888" tick={{ fill: '#888' }} />
@@ -558,6 +639,7 @@ export default function Dashboard() {
                     )}
                   </TableBody>
                 </Table>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </CardContent>
           </Card>
