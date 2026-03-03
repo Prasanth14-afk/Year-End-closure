@@ -124,14 +124,14 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-7xl animate-in fade-in zoom-in duration-500">
-      <header className="mb-10 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between border-b border-border pb-6">
+      <header className="mb-8 sm:mb-10 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between border-b border-border pb-6 gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2 text-white">Year End closure</h1>
-          <p className="text-muted-foreground text-lg">Cross-vendor procurement intelligence dashboard</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-white">Year End closure</h1>
+          <p className="text-muted-foreground text-sm sm:text-lg">Cross-vendor procurement intelligence dashboard</p>
         </div>
-        <div className="mt-4 sm:mt-0 px-4 py-2 bg-secondary/50 rounded-lg border border-border">
-          <p className="text-sm font-semibold tracking-wider uppercase text-foreground">Operational Status</p>
-          <div className="flex items-center gap-2 mt-1">
+        <div className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-secondary/50 rounded-lg border border-border">
+          <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-foreground">Operational Status</p>
+          <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span className="text-xs text-muted-foreground">Systems Active</span>
           </div>
@@ -139,14 +139,14 @@ export default function Dashboard() {
       </header>
 
       <Tabs defaultValue="outstanding" className="w-full">
-        <TabsList className="grid grid-cols-2 lg:grid-cols-7 w-full h-auto gap-2 bg-transparent p-0 mb-8">
-          <TabsTrigger value="outstanding" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><TrendingUp className="w-4 h-4 mr-2" /> Outstanding</TabsTrigger>
-          <TabsTrigger value="adv" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Building2 className="w-4 h-4 mr-2" /> Advance List</TabsTrigger>
-          <TabsTrigger value="desi" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Layers className="w-4 h-4 mr-2" /> Desi Arts</TabsTrigger>
-          <TabsTrigger value="marvel" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Layers className="w-4 h-4 mr-2" /> Marvel</TabsTrigger>
-          <TabsTrigger value="po" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><ShoppingCart className="w-4 h-4 mr-2" /> PO Preclose</TabsTrigger>
-          <TabsTrigger value="pr" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><ListChecks className="w-4 h-4 mr-2" /> PR Preclose</TabsTrigger>
-          <TabsTrigger value="rfq" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Search className="w-4 h-4 mr-2" /> RFQs</TabsTrigger>
+        <TabsList className="flex flex-wrap w-full h-auto gap-2 bg-transparent p-0 mb-8">
+          <TabsTrigger value="outstanding" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><TrendingUp className="w-4 h-4 mr-2" /> Outstanding</TabsTrigger>
+          <TabsTrigger value="adv" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Building2 className="w-4 h-4 mr-2" /> Advance List</TabsTrigger>
+          <TabsTrigger value="desi" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Layers className="w-4 h-4 mr-2" /> Desi Arts</TabsTrigger>
+          <TabsTrigger value="marvel" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Layers className="w-4 h-4 mr-2" /> Marvel</TabsTrigger>
+          <TabsTrigger value="po" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><ShoppingCart className="w-4 h-4 mr-2" /> PO Preclose</TabsTrigger>
+          <TabsTrigger value="pr" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><ListChecks className="w-4 h-4 mr-2" /> PR Preclose</TabsTrigger>
+          <TabsTrigger value="rfq" className="flex-1 min-w-[140px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border border-border p-3 rounded-lg"><Search className="w-4 h-4 mr-2" /> RFQs</TabsTrigger>
         </TabsList>
 
         {/* 1. OUTSTANDING PO */}
@@ -156,8 +156,8 @@ export default function Dashboard() {
               <CardTitle className="text-2xl text-white">Outstanding PO Overview</CardTitle>
               <CardDescription>Top vendors by total pending item quantity</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[550px] w-full mb-8">
+            <CardContent className="p-2 sm:p-6">
+              <div className="h-[450px] sm:h-[550px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={outstandingData} margin={{ top: 30, right: 30, left: 20, bottom: 200 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
@@ -230,8 +230,8 @@ export default function Dashboard() {
               <CardTitle className="text-2xl text-white">Advance Vendor Distribution</CardTitle>
               <CardDescription>Vendors analyzed by Advance Value</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[600px] w-full mb-8">
+            <CardContent className="p-2 sm:p-6">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={advData} margin={{ top: 20, right: 80, left: 20, bottom: 20 }} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={true} vertical={false} />
@@ -286,8 +286,8 @@ export default function Dashboard() {
               <CardTitle className="text-2xl text-white">Desi Arts Schedule</CardTitle>
               <CardDescription>Comparison: Cutting Qty As Per PO vs Revised Qty</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[600px] w-full mb-8">
+            <CardContent className="p-2 sm:p-6">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={desiChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
@@ -305,7 +305,7 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
                 <h3 className="text-xl font-bold text-white mb-6">Revised Quantity Size Breakdown</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={desiSizesChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
@@ -322,7 +322,7 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
                 <h3 className="text-xl font-bold text-white mb-6">Fabric Received vs Dispatch</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={desiSbChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
@@ -375,8 +375,8 @@ export default function Dashboard() {
               <CardTitle className="text-2xl text-white">Marvel Schedule</CardTitle>
               <CardDescription>Production and revision status</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[600px] w-full mb-8">
+            <CardContent className="p-2 sm:p-6">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={marvelChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
@@ -394,7 +394,7 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
                 <h3 className="text-xl font-bold text-white mb-6">Revised Quantity Size Breakdown</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={marvelSizesChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
@@ -412,7 +412,7 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
+              <div className="h-[450px] sm:h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
                 <h3 className="text-xl font-bold text-white mb-6">Fabric Received vs Dispatch</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={marvelSbChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
@@ -465,8 +465,8 @@ export default function Dashboard() {
               <CardTitle className="text-2xl text-white">PO Preclose Distributions</CardTitle>
               <CardDescription>Volume of Source Documents processed per Vendor</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[500px] flex justify-center items-center w-full mb-8">
+            <CardContent className="p-2 sm:p-6">
+              <div className="h-[450px] sm:h-[500px] flex justify-center items-center w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={poData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
@@ -535,8 +535,8 @@ export default function Dashboard() {
               <CardTitle className="text-2xl text-white">PR Preclose Requisitions</CardTitle>
               <CardDescription>Total request quantity grouped by personnel</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[550px] w-full mb-8">
+            <CardContent className="p-2 sm:p-6">
+              <div className="h-[450px] sm:h-[550px] w-full mb-8">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={prData} margin={{ top: 30, right: 30, left: 20, bottom: 200 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
@@ -574,10 +574,10 @@ export default function Dashboard() {
                 <Table>
                   <TableHeader className="bg-secondary/50 sticky top-0 z-10 backdrop-blur-md">
                     <TableRow>
-                      <TableHead>Requested By</TableHead>
-                      <TableHead>PR #</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead className="text-right">Quantity</TableHead>
+                      <TableHead className="min-w-[150px]">Requested By</TableHead>
+                      <TableHead className="min-w-[120px]">PR #</TableHead>
+                      <TableHead className="min-w-[300px]">Description</TableHead>
+                      <TableHead className="text-right min-w-[100px]">Quantity</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
