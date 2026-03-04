@@ -94,14 +94,28 @@ export default function Dashboard() {
     dispatch: Number(d.dispatch) || 0
   })), []);
 
-  const marvelSizesChartData = useMemo(() => (data as any).marvel_sizes.map((d: any) => ({
-    name: String(d.product),
-    XS: Number(d.XS_rev) || 0,
-    S: Number(d.S_rev) || 0,
-    M: Number(d.M_rev) || 0,
-    L: Number(d.L_rev) || 0,
-    XL: Number(d.XL_rev) || 0,
-  })), []);
+  const marvelSizesChartData = useMemo(() => {
+    const list: any[] = [];
+    (data as any).marvel_sizes.forEach((d: any) => {
+      list.push({
+        name: String(d.product) + ' (Actual)',
+        XS: Number(d.XS_act) || 0,
+        S: Number(d.S_act) || 0,
+        M: Number(d.M_act) || 0,
+        L: Number(d.L_act) || 0,
+        XL: Number(d.XL_act) || 0,
+      });
+      list.push({
+        name: String(d.product) + ' (Revised)',
+        XS: Number(d.XS_rev) || 0,
+        S: Number(d.S_rev) || 0,
+        M: Number(d.M_rev) || 0,
+        L: Number(d.L_rev) || 0,
+        XL: Number(d.XL_rev) || 0,
+      });
+    });
+    return list;
+  }, []);
 
   // Filter States
   const [outstandingFilter, setOutstandingFilter] = useState("All");
@@ -395,7 +409,7 @@ export default function Dashboard() {
               </div>
 
               <div className="h-[450px] sm:h-[600px] w-full mb-8 mt-12 border-t border-border pt-8">
-                <h3 className="text-xl font-bold text-white mb-6">Revised Quantity Size Breakdown</h3>
+                <h3 className="text-xl font-bold text-white mb-6">Revised vs Actual Quantity Size Breakdown</h3>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={marvelSizesChartData} margin={{ top: 30, right: 30, left: 20, bottom: 250 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />

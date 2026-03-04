@@ -5863,34 +5863,54 @@
     {
       "product": "Washed Cotton 3Q Essential Sleeve Top",
       "XS_rev": 0,
+      "XS_act": 25,
       "S_rev": 110,
+      "S_act": 55,
       "M_rev": 110,
+      "M_act": 75,
       "L_rev": 110,
-      "XL_rev": 56
+      "L_act": 65,
+      "XL_rev": 56,
+      "XL_act": 30
     },
     {
       "product": "Washed Cotton 3Q Sleeve Top",
       "XS_rev": 0,
+      "XS_act": 19,
       "S_rev": 81,
+      "S_act": 45,
       "M_rev": 80,
+      "M_act": 55,
       "L_rev": 81,
-      "XL_rev": 42
+      "L_act": 45,
+      "XL_rev": 42,
+      "XL_act": 35
     },
     {
       "product": "Washed Cotton Tunic with Pin Tucks",
       "XS_rev": 0,
+      "XS_act": 25,
       "S_rev": 111,
+      "S_act": 55,
       "M_rev": 111,
+      "M_act": 70,
       "L_rev": 111,
-      "XL_rev": 55
+      "L_act": 55,
+      "XL_rev": 55,
+      "XL_act": 35
     },
     {
       "product": "Washed Cotton 'V' Neck Essential Top",
       "XS_rev": 0,
+      "XS_act": 10,
       "S_rev": 112,
+      "S_act": 40,
       "M_rev": 112,
+      "M_act": 44,
       "L_rev": 112,
-      "XL_rev": 56
+      "L_act": 40,
+      "XL_rev": 56,
+      "XL_act": 25
     }
   ]
 }
